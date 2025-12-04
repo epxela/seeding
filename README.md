@@ -1,120 +1,135 @@
-# Apple Music Case Study
-**Universidad Da Vinci de Guatemala** **Curso:** Desarrollo Web / Bases de Datos II  
-**Catedrático:** Ing. Brandon Chitay
+# Universidad Davinci de Guatemala
+## Ingenieria en sistemas
+## Catedratico: Ing. Brandon Chitay
 
----
+## Protecto realizado por:
+### Francisco Javier Rojas Santos
+### Carnet: 202302368
 
-## 🎯 Objetivo
-Este repositorio contiene el **Kit de Inicio (Starter Kit)**. Su misión es actuar como arquitectos de datos para diseñar la infraestructura, persistencia y API de la nueva plataforma de analíticas de Apple Music.
+### Enlace al video de youtube: https://youtu.be/BPSxvDXMOyk  
 
-El script incluido (`seed.js`) generará **miles de registros simulados** (Usuarios, Canciones, Artistas y Streams) para que puedan probar sus consultas en un entorno realista.
+Sistema de analíticas para streaming de música basado en MongoDB, diseñado como caso de estudio académico para el curso de Bases de Datos II de la Universidad Da Vinci de Guatemala.
 
----
+## Descripción
 
-## 🚀 Instrucciones de Inicio (Setup)
+Este proyecto implementa una plataforma completa de Business Intelligence para análisis de datos de streaming musical, simulando el ecosistema de Apple Music. Incluye generación de datos sintéticos, consultas avanzadas con aggregation pipelines de MongoDB, y una API REST para consumo de datos.
 
-Sigue estos pasos estrictamente para configurar tu entorno de examen.
+### Características Principales
 
-### 1. Preparar el Repositorio
-Este repositorio es la base de tu entrega. No lo clones directamente, primero haz tu propia copia:
+- **Generación de Datos Sintéticos**: Script de seeding que genera usuarios, artistas, canciones y reproducciones realistas
+- **Consultas de Agregación**: 5 pipelines de MongoDB para análisis de negocio
+- **API REST**: 5 endpoints para consumo de datos analíticos
+- **Infraestructura Dockerizada**: MongoDB 7.0 con persistencia de datos
 
-1.  Da clic en el botón **Fork** (arriba a la derecha de esta página) para crear una copia en tu cuenta de GitHub.
-2.  Clona **tu nuevo repositorio** (el que está en tu perfil) a tu máquina local:
-    ```bash
-    git clone [https://github.com/TU_USUARIO/seeding.git](https://github.com/TU_USUARIO/seeding.git)
-    cd seeding
-    ```
+## Arquitectura del Proyecto
 
-### 2. Instalar Dependencias del Seeder
-El script de generación de datos utiliza Node.js. Instala las librerías necesarias:
-```bash
-npm install
-````
-
-### 3\. Levantar Infraestructura (Docker)
-
-Antes de generar los datos, necesitas una base de datos corriendo.
-
-  * Crea tu archivo `docker-compose.yml` (ver sección de Entregables abajo).
-  * Levanta el servicio:
-    ```bash
-    docker-compose up -d
-    ```
-  * **Importante:** Asegúrate de que MongoDB esté expuesto en el puerto `27017`.
-
-### 4\. Poblar la Base de Datos (Seeding)
-
-Una vez que Mongo esté corriendo, ejecuta el script mágico para llenar la DB con data de prueba:
-
-```bash
-npm start
 ```
-
-*Si ves el mensaje "✅ EXITO: Base de datos poblada", estás listo para empezar.*
-
------
-
-## 📂 Estructura de Entrega (Requerido)
-
-Para mantener el orden, debes crear las siguientes carpetas en este repositorio y colocar tus archivos donde corresponde. **El desorden será penalizado.**
-
-```text
-/
+apple-music-analytics/
+├── api/
+│   └── server.js           
 ├── api-design/
-│   └── api-spec.md         # Documentación de los 5 Endpoints (Request/Response)
-├── database/
-│   ├── docker-compose.yml  # Tu configuración de Docker
-│   ├── queries.js          # Tus 5 Agregaciones (Aggregation Pipelines)
-│   └── schema-diagram.pdf  # Imagen o PDF de tu diseño de esquema
+│   └── api-spec.md         
 ├── dashboard-v0/
-│   ├── screenshots/        # Capturas del dashboard generado en v0
-│   └── prompt.txt          # El prompt que usaste para generar la UI
-├── seed.js                 # (Ya incluido)
-├── package.json            # (Ya incluido)
-└── README.md               # (Este archivo)
+│   ├── screenshots/             
+├── database/
+│   ├── docker-compose.yml  
+│   └── queries.js          
+├── seed.js                 
+├── package.json
+└── README.md
 ```
 
------
+## Modelo de Datos
 
-## 📝 Lista de Tareas (Checklist)
+El sistema utiliza 4 colecciones principales en MongoDB:
 
-Para ganar los 100 puntos, asegúrate de completar:
+| Colección | Descripción | Campos Clave |
+|-----------|-------------|--------------|
+| `users` | Usuarios de la plataforma | `_id`, `username`, `email`, `country`, `birth_date`, `subscription` |
+| `artists` | Catálogo de artistas | `_id`, `name`, `genre`, `followers` |
+| `songs` | Canciones del catálogo | `_id`, `title`, `artist_id`, `artist_name`, `genre`, `duration_seconds` |
+| `streams` | Historial de reproducciones | `_id`, `user_id`, `song_id`, `artist_id`, `date`, `device`, `seconds_played` |
 
-  - [ ] **Infraestructura:** Docker corre correctamente y tiene persistencia de datos (Volumes).
-  - [ ] **Datos:** El script `npm start` corre sin errores y genera usuarios "Zombis" y datos de Guatemala.
-  - [ ] **Consultas:** El archivo `database/queries.js` contiene las 5 agregaciones solicitadas en el enunciado
-  - [ ] **API:** El diseño de los endpoints en `api-design/` coincide lógicamente con lo que muestra el Dashboard.
-  - [ ] **Visualización:** Las capturas en `dashboard-v0/` muestran una interfaz coherente con los datos.
-  - [ ] **Video:** Has subido tu video explicativo (link en la entrega del portal o en este README al final).
 
------
+### Prerrequisitos
 
-## ⚠️ Solución de Problemas (Troubleshooting)
+- Node.js 18+
+- Docker y Docker Compose
+- npm o yarn
 
-**Error: "connect ECONNREFUSED 127.0.0.1:27017"**
+## Consultas de Agregación
 
-  * **Causa:** Tu contenedor de Docker no está corriendo o no mapeaste el puerto.
-  * **Solución:** Revisa tu `docker-compose.yml` y asegúrate de tener `ports: - "27017:27017"`.
+El archivo `database/queries.js` contiene 5 consultas de Business Intelligence:
 
-**Error: "Cannot find module..."**
+### 1. Reporte de Regalías (Royalties)
+Calcula el tiempo total de reproducción por artista en el último mes, útil para calcular pagos a artistas.
 
-  * **Causa:** No instalaste las librerías.
-  * **Solución:** Ejecuta `npm install` en la raíz del proyecto.
+### 2. Top 10 Canciones en Guatemala
+Ranking de las canciones más escuchadas en Guatemala en los últimos 7 días.
 
------
+### 3. Usuarios Zombies (Churn Risk)
+Identifica usuarios Premium que no han reproducido música en 30 días, candidatos para campañas de retención.
 
-### 📅 Fecha Límite: 06 de Diciembre
+### 4. Demografía de Oyentes por Género
+Distribución por rangos de edad de los oyentes de un género específico (ej: Reggaeton).
 
-¡Éxito, Ingenieros\! 🍏🎵
+### 5. Top Fans de un Artista
+Los usuarios que han escuchado más canciones distintas de un artista específico.
 
+### Ejecutar las consultas
+
+```bash
+node database/queries.js
 ```
 
-***
+## API REST
 
-### ¿Por qué funciona este README?
+### Iniciar el servidor
 
-1.  **Reduce la fricción cognitiva:** Les dice exactamente qué comando ejecutar (`npm install`, `npm start`).
-2.  **Estandariza la entrega:** La sección "Estructura de Entrega" te salvará horas de calificación. Ya no tendrás que buscar dónde puso cada alumno el `docker-compose`.
-3.  **Checklist:** Les da seguridad psicológica de que "ya terminaron" si marcaron todas las casillas.
-4.  **Troubleshooting:** Previene que te escriban correos preguntando por errores básicos de conexión a Mongo.
+```bash
+node api/server.js
 ```
+
+El servidor se levanta en `http://localhost:3000`
+
+### Endpoints Disponibles
+
+| Método | Endpoint | Descripción | Parámetros |
+|--------|----------|-------------|------------|
+| GET | `/api/royalties` | Reporte de regalías | `period`, `rate`, `rate_per_minute` |
+| GET | `/api/charts/top-songs` | Top canciones por región | `region`*, `days`, `limit` |
+| GET | `/api/users/zombies` | Usuarios inactivos | `days`, `subscription`, `country` |
+| GET | `/api/demographics/genre` | Demografía por género | `genre`* |
+| GET | `/api/users/top-fans` | Top fans de artista | `artist`*, `limit` |
+
+*Parámetros requeridos
+
+### Ejemplos de Uso
+
+
+Top 10 canciones en Guatemala
+curl "http://localhost:3000/api/charts/top-songs?region=GT"
+
+Usuarios zombies Premium
+curl "http://localhost:3000/api/users/zombies?days=30&subscription=Premium"
+
+Demografía de oyentes de Reggaeton
+curl "http://localhost:3000/api/demographics/genre?genre=Reggaeton"
+
+Top 5 fans de Bad Bunny
+curl "http://localhost:3000/api/users/top-fans?artist=Bad%20Bunny&limit=5"
+
+Reporte de regalías del último mes
+curl "http://localhost:3000/api/royalties?period=30&rate=0.01"
+
+
+## Tecnologías Utilizadas
+
+| Tecnología | Versión | Uso |
+|------------|---------|-----|
+| MongoDB | 7.0 | Base de datos NoSQL |
+| Node.js | 18+ | Runtime de JavaScript |
+| Express.js | 4.x | Framework web para API |
+| Docker | - | Contenedorización |
+| Faker.js | @faker-js/faker | Generación de datos sintéticos |
+
